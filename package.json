@@ -16,7 +16,7 @@
   },
   "scripts": {
     "start": "node dist/app.js",
-    "build": "tsc -p .",
-    "dev": "nodemon --exec node --loader ts-node/esm index.ts"
+    "build": "rm dist.zip && tsc -p . && zip -r dist.zip ./ && scp dist.zip jws@192.168.35.27:/home/jws/monitor",
+    "dev": "nodemon --exec node --loader ts-node/esm src/index.ts"
   }
 }
