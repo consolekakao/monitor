@@ -17,12 +17,46 @@ export const convertData = (str: string) => {
   }
 
   if (str.includes("───────") && str.includes("uptime")) {
-    return str
+    // comand: pm2 status
+    const pm2Data = str
       .replace(/\n/g, "")
       .replace(/[^a-z0-9\s{0,}]/g, "")
       .split("  ")
+      .filter((v: string) => v !== "")
+      .map((v: string) => v.replace(/\s{0,}/g, ""));
+
+    let s = [[...pm2Data.slice(0, 11)], [...pm2Data.slice(12)]];
+    let arr = {};
+    for (let i = 0; i < 11; i++) {
+      arr = { ...arr, [s[0][i]]: s[1][i] };
+    }
+    return arr;
+  }
+
+  if (str.includes("/dev/mapper/ubuntu--vg-lv--0")) {
+    // command: df | sort -s
+    const [total, used, available] = str
+      .split(" ")
       .filter((v) => v !== "")
-      .slice(11);
+      .slice(1, 4);
+    return {
+      total,
+      used,
+      available,
+    };
+  }
+
+  if (str.includes("Mem") && str.includes("Swap")) {
+    // command: free -m
+    const [total, used, available] = str
+      .split(" ")
+      .filter((v) => v !== "")
+      .splice(6, 3);
+    return {
+      total,
+      used,
+      available,
+    };
   }
 
   return str;
